@@ -1,0 +1,29 @@
+PhysicalHardDrive class
+instance variables:
+- name (String) (user input)
+- size (double) (user input)
+
+
+PhysicalVolume class (subclass of PhysicalHardDrive? Guess not)
+instance variables:
+- phd (PhysicalHardDrive) (unique, cannot be shared with another PV)
+- name (String) (user input)
+- uuid (String) (import java.util.UUID)
+
+
+VolumeGroup class
+instance variables:
+- uuid (String) (import java.util.UUID)
+- name (String) (user input)
+- pvList (ArrayList<PhysicalVolume>) (import java.util.ArrayList) (array or ArrayList? TBD)
+- lvList (ArrayList<LogicalVolume>) (array or ArrayList? TBD)
+- size (double)?
+- freeSpaceLeft (double)?
+
+
+LogicalVolume class
+instance variables:
+- size (double) (user input)
+- uuid (String) (import java.util.UUID)
+- name (String) (user input)
+- vg (VolumeGroup)
