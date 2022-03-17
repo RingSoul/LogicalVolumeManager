@@ -4,7 +4,7 @@ instance variables:
 - size (double) (user input)
 
 
-PhysicalVolume class (subclass of PhysicalHardDrive? Guess not)
+PhysicalVolume class
 instance variables:
 - phd (PhysicalHardDrive) (unique, cannot be shared with another PV)
 - name (String) (user input)

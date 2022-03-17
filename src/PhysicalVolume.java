@@ -10,9 +10,23 @@ public class PhysicalVolume {
     public PhysicalVolume(String name, PhysicalHardDrive phd)
     {
         this.name = name;
-        this.phd = phd;
         this.uuid = UUID.randomUUID().toString();
-
+        this.phd = phd;
     }
 
+    // methods
+    // accessor methods
+    public String getName()
+    {
+        return name;
+    }
+    public String getUUID()
+    {
+        return uuid;
+    }
+
+    public double getSize()
+    {
+        return phd.getSize();
+    }
 }
