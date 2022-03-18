@@ -1,6 +1,6 @@
 import java.util.UUID;
 
-public class PhysicalVolume {
+public class PhysicalVolume extends VolumeRelated {
     // instance variables
     private String name;
     private String uuid;
@@ -9,21 +9,12 @@ public class PhysicalVolume {
     // constructor
     public PhysicalVolume(String name, PhysicalHardDrive phd)
     {
-        this.name = name;
-        this.uuid = UUID.randomUUID().toString();
+        super(name);
         this.phd = phd;
     }
 
     // methods
     // accessor methods
-    public String getName()
-    {
-        return name;
-    }
-    public String getUUID()
-    {
-        return uuid;
-    }
 
     public double getSize()
     {
