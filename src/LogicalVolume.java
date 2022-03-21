@@ -1,29 +1,21 @@
 import java.util.UUID;
 
-public class LogicalVolume {
-    private String name;
+public class LogicalVolume extends VolumeRelated {
     private double size;
-    private String uuid;
     private VolumeGroup vg;
 
     public LogicalVolume(String name, double size, VolumeGroup vg)
     {
-        this.name = name;
+        super(name);
         this.size = size;
         this.vg = vg;
-        uuid = UUID.randomUUID().toString();
     }
 
     // methods
     // accessor methods
-    public String getName() {
-        return name;
-    }
+    // (getName and getUUID inherited from VolumeRelated superclass)
     public double getSize() {
         return size;
-    }
-    public String getUuid() {
-        return uuid;
     }
     public VolumeGroup getVg() {
         return vg;

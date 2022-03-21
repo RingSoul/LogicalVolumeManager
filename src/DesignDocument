@@ -4,26 +4,31 @@ instance variables:
 - size (double) (user input)
 
 
-PhysicalVolume class
+PhysicalVolume class (subclass of VolumeRelated)
 instance variables:
 - phd (PhysicalHardDrive) (unique, cannot be shared with another PV)
-- name (String) (user input)
-- uuid (String) (import java.util.UUID)
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- uuid (String) (inherited from VolumeRelated superclass)
 
 
-VolumeGroup class
+VolumeGroup class (subclass of VolumeRelated)
 instance variables:
-- uuid (String) (import java.util.UUID)
-- name (String) (user input)
-- pvList (ArrayList<PhysicalVolume>) (import java.util.ArrayList) (array or ArrayList? TBD)
-- lvList (ArrayList<LogicalVolume>) (array or ArrayList? TBD)
-- size (double)?
-- freeSpaceLeft (double)?
+- uuid (String) (inherited from VolumeRelated superclass)
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- pvList (ArrayList<PhysicalVolume>) (import java.util.ArrayList)
+- lvList (ArrayList<LogicalVolume>)
+- size (double)
+- freeSpaceLeft (double)
 
 
-LogicalVolume class
+LogicalVolume class (subclass of VolumeRelated)
 instance variables:
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- uuid (String) (inherited from VolumeRelated superclass)
 - size (double) (user input)
-- uuid (String) (import java.util.UUID)
-- name (String) (user input)
 - vg (VolumeGroup)
+
+
+VolumeRelated class (super class of PhysicalVolume, VolumeGroup, LogicalVolume classes)
+- name (String) (user input)
+- uuid (String) (import java.util.UUID)

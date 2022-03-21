@@ -2,8 +2,6 @@ import java.util.UUID;
 
 public class PhysicalVolume extends VolumeRelated {
     // instance variables
-    private String name;
-    private String uuid;
     private PhysicalHardDrive phd;
 
     // constructor
@@ -15,6 +13,11 @@ public class PhysicalVolume extends VolumeRelated {
 
     // methods
     // accessor methods
+    // (getName and getUUID inherited from VolumeRelated superclass)
+    public PhysicalHardDrive getPHD()
+    {
+        return phd;
+    }
 
     public double getSize()
     {

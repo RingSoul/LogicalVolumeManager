@@ -1,34 +1,26 @@
 import java.util.UUID;
 import java.util.ArrayList;
 
-public class VolumeGroup {
+public class VolumeGroup extends VolumeRelated {
     // instance variables
-    private String name;
     private double size;
     private double freeSpaceLeft;
     private ArrayList<PhysicalVolume> pvList;
     private ArrayList<LogicalVolume> lvList;
-    private String uuid;
 
     // constructor
     public VolumeGroup(String name)
     {
-        this.name = name;
-        size = 0.0;
-        freeSpaceLeft = 0.0;
+        super(name);
+        size = 0.0; //////////////
+        freeSpaceLeft = 0.0; ///////////////
         pvList = new ArrayList<PhysicalVolume>();
         lvList = new ArrayList<LogicalVolume>();
-        uuid = UUID.randomUUID().toString();
     }
 
     // methods
     // accessor methods
-    public String getName() {
-        return name;
-    }
-    public String getUUID() {
-        return uuid;
-    }
+    // (getName and getUUID inherited from VolumeRelated superclass)
     public ArrayList<LogicalVolume> getLvList() {
         return lvList;
     }
