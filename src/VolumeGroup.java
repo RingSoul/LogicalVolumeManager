@@ -9,12 +9,13 @@ public class VolumeGroup extends VolumeRelated {
     private ArrayList<LogicalVolume> lvList;
 
     // constructor
-    public VolumeGroup(String name)
+    public VolumeGroup(String name, PhysicalVolume pv)
     {
         super(name);
-        size = 0.0; //////////////
-        freeSpaceLeft = 0.0; ///////////////
+        size = getSize();
+        freeSpaceLeft = getFreeSpaceLeft();
         pvList = new ArrayList<PhysicalVolume>();
+        pvList.add(pv);
         lvList = new ArrayList<LogicalVolume>();
     }
 
@@ -30,7 +31,7 @@ public class VolumeGroup extends VolumeRelated {
     // requiring computation
     public double getSize()
     {
-        double size = 0.0;
+        double size = 0;
         for (PhysicalVolume pv : pvList)
         {
             size += pv.getSize();
@@ -39,13 +40,19 @@ public class VolumeGroup extends VolumeRelated {
     }
     public double getFreeSpaceLeft()
     {
-        double freeSpaceLeft = 0.0;
-        double lvSize = 0.0;
+        double freeSpaceLeft = 0;
+        double lvSize = 0;
         for (LogicalVolume lv : lvList)
         {
             lvSize += lv.getSize();
         }
         freeSpaceLeft = getSize() - lvSize;
         return freeSpaceLeft;
+    }
+
+    public void update() // every time the extend command or lv command is called
+    {
+        size = getSize();
+        freeSpaceLeft = getFreeSpaceLeft();
     }
 }

@@ -20,4 +20,10 @@ public class PhysicalHardDrive {
     {
         return size;
     }
+
+    public String toString()
+    {
+        String str = name + " [" + size + "G]";
+        return str;
+    }
 }
