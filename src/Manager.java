@@ -103,6 +103,7 @@ public class Manager {
 
     // return the VolumeGroup object associated with the given pv in the parameter
     // if none, return null
+    // helper method for pvlist and vgcreate
     private VolumeGroup getAssociatedVG(PhysicalVolume pv)
     {
         for (VolumeGroup vg : vgList)
@@ -162,6 +163,7 @@ public class Manager {
             spaceIndex = choice.indexOf(" ");
             String pvName = choice.substring(0, spaceIndex);
             String phdName = choice.substring(spaceIndex+1);
+            // find demanded phd
             PhysicalHardDrive phd = null;
             for (PhysicalHardDrive p : phdList) // select the corresponding PHD
             {
@@ -170,6 +172,7 @@ public class Manager {
                     phd = p;
                 }
             }
+            // process
             if (checkRepeatedNamePV(pvName))
             {
                 System.out.println("ERROR: A physical volume with the same name already exists, try a different name.");
@@ -204,7 +207,43 @@ public class Manager {
         }
         else if (choice.indexOf("vgcreate") != -1)
         {
-
+            int spaceIndex = choice.indexOf(" ");
+            choice = choice.substring(spaceIndex+1); // update; first part of command excluded
+            spaceIndex = choice.indexOf(" ");
+            String vgName = choice.substring(0, spaceIndex);
+            String pvName = choice.substring(spaceIndex+1);
+            // find demanded pv
+            PhysicalVolume pv = null;
+            for (PhysicalVolume p : pvList)
+            {
+                if (p.getName().equals(pvName))
+                {
+                    pv = p;
+                }
+            }
+            // process
+            if (checkRepeatedNameVG(vgName))
+            {
+                System.out.println("ERROR: A volume group with the same name already exists, try a different name.");
+            }
+            else if (pv == null)
+            {
+                System.out.println("ERROR: The physical volume you selected does not exist.");
+            }
+            else
+            {
+                VolumeGroup associatedVG = getAssociatedVG(pv);
+                if (associatedVG == null)
+                {
+                    VolumeGroup vg = new VolumeGroup(vgName, pv);
+                    vgList.add(vg);
+                    System.out.println("Volume Group " + vg.getName() + " created.");
+                }
+                else
+                {
+                    System.out.println("ERROR: The physical volume you selected is already a part of another volume group.");
+                }
+            }
         }
         else if (choice.indexOf("vgextend") != -1)
         {
@@ -222,9 +261,9 @@ public class Manager {
         {
 
         }
-        else if (choice.equals("exit"))
+        else
         {
-
+            System.out.println("ERROR: Command is not recognized.");
         }
     }
 
