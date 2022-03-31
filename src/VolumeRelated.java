@@ -22,4 +22,9 @@ public class VolumeRelated {
     {
         return uuid;
     }
+
+    public void restoreUUID(String uuid)
+    {
+        this.uuid = uuid;
+    }
 }

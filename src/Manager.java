@@ -1,9 +1,6 @@
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 
 public class Manager {
     // instance variables
@@ -18,6 +15,8 @@ public class Manager {
     private File file;
     private FileReader reader;
     private FileWriter writer;
+    private BufferedReader br;
+    private BufferedWriter bw;
 
 
 
@@ -28,18 +27,123 @@ public class Manager {
         vgList = new ArrayList<VolumeGroup>();
         lvList = new ArrayList<LogicalVolume>();
         scanner = new Scanner(System.in);
-        file = new File("/Data");
+        file = new File("src/Data");
         try {
             reader = new FileReader(file);
+            br = new BufferedReader(reader);
             writer = new FileWriter(file);
-        } catch (FileNotFoundException e) {
-            System.out.println("Data storage is not found.");
+            bw = new BufferedWriter(writer);
+        } catch (IOException e) {
+            System.out.println("Failed.");
         }
     }
 
 
     public void start()
     {
+        // format:
+        // phd: phdName|size
+        // pv: pvName|phd|uuid
+        // vg: vgName|firstPV|uuid
+        // vgextend: vgName|pvName
+        // lv: lvName|vgName|size|uuid
+        try {
+            String line = br.readLine();
+            while ((line = br.readLine()) != null)
+            {
+                int spaceIndex = line.indexOf(" ");
+                String info = line.substring(spaceIndex);
+                if (line.indexOf("phd") == 0)
+                {
+                    String[] infos = info.split("\\|");
+                    String phdName = infos[0];
+                    double size = Double.parseDouble(infos[1]);
+                    PhysicalHardDrive phd = new PhysicalHardDrive(phdName, size);
+                    phdList.add(phd);
+                }
+                else if (line.indexOf("pv") == 0)
+                {
+                    String[] infos = info.split("\\|");
+                    String pvName = infos[0];
+                    String phdName = infos[1];
+                    String uuid = infos[2];
+                    PhysicalHardDrive phd = null;
+                    for (PhysicalHardDrive p : phdList)
+                    {
+                        if (p.getName().equals(phdName))
+                        {
+                            phd = p;
+                        }
+                    }
+                    PhysicalVolume pv = new PhysicalVolume(pvName, phd);
+                    pv.restoreUUID(uuid);
+                    pvList.add(pv);
+                }
+                else if (line.indexOf("vg") == 0)
+                {
+                    String[] infos = info.split("\\|");
+                    String vgName = infos[0];
+                    String pvName= infos[1];
+                    String uuid = infos[2];
+                    PhysicalVolume pv = null;
+                    for (PhysicalVolume p : pvList)
+                    {
+                        if (p.getName().equals(pvName))
+                        {
+                            pv = p;
+                        }
+                    }
+                    VolumeGroup vg = new VolumeGroup(vgName, pv);
+                    vg.restoreUUID(uuid);
+                    vgList.add(vg);
+                }
+                else if (line.indexOf("vgextend") == 0)
+                {
+                    String[] infos = info.split("\\|");
+                    String vgName = infos[0];
+                    String pvName = infos[1];
+                    VolumeGroup vg = null;
+                    PhysicalVolume pv = null;
+                    for (VolumeGroup v : vgList)
+                    {
+                        if (v.getName().equals(vgName))
+                        {
+                            vg = v;
+                        }
+                    }
+                    for (PhysicalVolume p : pvList)
+                    {
+                        if (p.getName().equals(pvName))
+                        {
+                            pv = p;
+                        }
+                    }
+                    vg.getPvList().add(pv);
+                    vg.update();
+                }
+                else if (line.indexOf("lv") == 0)
+                {
+                    String[] infos = info.split("\\|");
+                    String lvName = infos[0];
+                    String vgName = infos[1];
+                    double size = Double.parseDouble(infos[2]);
+                    String uuid = infos[3];
+                    VolumeGroup vg = null;
+                    for (VolumeGroup v : vgList)
+                    {
+                        if (v.getName().equals(vgName))
+                        {
+                            vg = v;
+                        }
+                    }
+                    LogicalVolume lv = new LogicalVolume(lvName, size, vg);
+                    lv.restoreUUID(uuid);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Data not restored properly.");
+        }
+
         System.out.println("Welcome to the LVM system! Enter your commands:");
         while (true)
         {
@@ -160,6 +264,7 @@ public class Manager {
                 PhysicalHardDrive phd = new PhysicalHardDrive(name, size);
                 phdList.add(phd);
                 System.out.println("Drive " + phd.getName() + " installed.");
+                store(phd);
             }
         }
         else if (choice.indexOf("list-drives") != -1)
@@ -260,6 +365,7 @@ public class Manager {
         }
         else if (choice.indexOf("vgextend") != -1)
         {
+            String dup = choice;
             int spaceIndex = choice.indexOf(" ");
             choice = choice.substring(spaceIndex+1); // update; first part of command excluded
             spaceIndex = choice.indexOf(" ");
@@ -295,6 +401,7 @@ public class Manager {
                     vg.getPvList().add(pv);
                     vg.update();
                     System.out.println("The Physical Volume " + pv.getName() + " is successfully added to the Volume Group " + vg.getName() + ".");
+                    store(dup);
                 }
                 else
                 {
@@ -348,6 +455,7 @@ public class Manager {
                     LogicalVolume lv = new LogicalVolume(lvName, givenSize, vg);
                     lvList.add(lv);
                     System.out.println("The Logical Volume " + lv.getName() + " is created.");
+                    store(lv);
                 }
                 else
                 {
@@ -377,7 +485,7 @@ public class Manager {
     }
 
 
-    public void sortString(ArrayList<String> list)
+    private void sortString(ArrayList<String> list)
     {
         // insertion sort approach
         for (int i = 1; i < list.size(); i++)
@@ -389,6 +497,54 @@ public class Manager {
                 System.out.println("Position shift");
                 index--;
             }
+        }
+    }
+
+    private void store(Object info)
+    {
+        // format:
+        // phd: phdName|size
+        // pv: pvName|phd|uuid
+        // vg: vgName|firstPV|uuid
+        // vgextend: vgName|pvName
+        // lv: lvName|vgName|size|uuid
+        String line = "";
+        if (info instanceof PhysicalHardDrive)
+        {
+            PhysicalHardDrive phd = (PhysicalHardDrive) info;
+            line = "phd: " + phd.getName() + "|" + phd.getSize();
+        }
+        else if (info instanceof PhysicalVolume)
+        {
+            PhysicalVolume pv = (PhysicalVolume) info;
+            line = "pv: " + pv.getName() + "|" + pv.getPHD() + "|" + pv.getUUID();
+        }
+        else if (info instanceof VolumeGroup)
+        {
+            VolumeGroup vg = (VolumeGroup) info;
+            line = "vg: " + vg.getName() + "|" + vg.getPvList().get(0).getName() + "|" + vg.getUUID();
+        }
+        else if (info instanceof LogicalVolume)
+        {
+            LogicalVolume lv = (LogicalVolume) info;
+            line = "lv: " + lv.getName() + "|" + lv.getVg().getName() + "|" + lv.getSize() + "|" + lv.getUUID();
+        }
+        else if (info instanceof String) // vgextend
+        {
+            String str = (String) info;
+            int spaceIndex = str.indexOf(" ");
+            str = str.substring(spaceIndex+1); // update; first part of command excluded
+            spaceIndex = str.indexOf(" ");
+            String vgName = str.substring(0, spaceIndex);
+            String pvName = str.substring(spaceIndex + 1);
+            line = vgName + "|" + pvName;
+        }
+
+        try {
+            bw.write(line);
+            bw.newLine();
+        } catch (IOException e) {
+            System.out.println("Failed to store data.");
         }
     }
 }
