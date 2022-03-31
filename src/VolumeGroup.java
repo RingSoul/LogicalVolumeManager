@@ -12,11 +12,11 @@ public class VolumeGroup extends VolumeRelated {
     public VolumeGroup(String name, PhysicalVolume pv)
     {
         super(name);
-        size = getSize();
-        freeSpaceLeft = getFreeSpaceLeft();
         pvList = new ArrayList<PhysicalVolume>();
         pvList.add(pv);
         lvList = new ArrayList<LogicalVolume>();
+        size = getSize();
+        freeSpaceLeft = getFreeSpaceLeft();
     }
 
     // methods
@@ -50,9 +50,22 @@ public class VolumeGroup extends VolumeRelated {
         return freeSpaceLeft;
     }
 
-    public void update() // every time the extend command or lv command is called
+    public void update()
     {
         size = getSize();
         freeSpaceLeft = getFreeSpaceLeft();
+    }
+
+    public String toString()
+    {
+        update();
+        String str = getName() + ": total:[" + size + "G] available:[" + freeSpaceLeft + "G] [";
+        str += pvList.get(0).getName();
+        for (int i = 1; i < pvList.size(); i++)
+        {
+            str += "," + pvList.get(i).getName();
+        }
+        str += "] [" + getUUID() + "]";
+        return str;
     }
 }

@@ -9,6 +9,8 @@ public class LogicalVolume extends VolumeRelated {
         super(name);
         this.size = size;
         this.vg = vg;
+        this.vg.getLvList().add(this);
+        vg.update();
     }
 
     // methods
@@ -19,5 +21,10 @@ public class LogicalVolume extends VolumeRelated {
     }
     public VolumeGroup getVg() {
         return vg;
+    }
+
+    public String toString()
+    {
+        return getName() + ": [" + size + "G] [" + vg.getName() + "] [" + getUUID() + "]";
     }
 }
