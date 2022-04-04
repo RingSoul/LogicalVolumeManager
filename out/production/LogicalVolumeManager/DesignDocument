@@ -59,7 +59,28 @@ public void restoreUUID(String uuid) --> restore the uuid of the volume object a
 
 
 Manager class
-
+instance variables:
+// storage for user inputs
+private ArrayList<PhysicalHardDrive> phdList;
+private ArrayList<PhysicalVolume> pvList;
+private ArrayList<VolumeGroup> vgList;
+private ArrayList<LogicalVolume> lvList;
+// Scanner object for user input
+private Scanner scanner;
+// data saver?
+private File file;
+private FileReader reader;
+private FileWriter writer;
+private BufferedReader br;
+private BufferedWriter bw;
+methods:
+- public void start() --> starts the program and collect user input; exit when "exit" is typed
+- public boolean checkRepeatedName**(String name) --> four of them; designed to return true if the name provided already exist, false otherwise
+- public boolean isAlreadyAssociated(PhysicalHardDrive phd) --> checks if the phd provided is already associated with a PV; true if it does, false if it does not
+- public VolumeGroup getAssociatedVG(PhysicalVolume pv) --> returns the VG that the given pv is associated with; if it is not associated with any, return null
+- public void processChoice(String choie) --> process the user input and give response accordingly
+- public void sortString(ArrayList<String> list) --> sort a list of String literals through the compareTo method calls
+- *NOT WORKING* public void store(Object info) --> store the given info into the Data file
 
 
 

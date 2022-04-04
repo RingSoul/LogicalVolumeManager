@@ -155,7 +155,7 @@ public class Manager {
             }
             processChoice(choice);
         }
-        System.out.println("Data has been saved. Bye!");
+        System.out.println("Data has NOT been saved. Bye!");
     }
 
 
@@ -470,7 +470,6 @@ public class Manager {
             {
                 LogicalVolume lv = lvList.get(i);
                 data.add(lv.toString());
-                System.out.println("One element identified.");
             }
             sortString(data);
             for (String line : data)
@@ -541,7 +540,7 @@ public class Manager {
         }
 
         try {
-            bw.write(line);
+            bw.write(line, 0, line.length());
             bw.newLine();
         } catch (IOException e) {
             System.out.println("Failed to store data.");
