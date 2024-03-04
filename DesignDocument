@@ -1,0 +1,89 @@
+PhysicalHardDrive class
+instance variables:
+- name (String) (user input)
+- size (double) (user input)
+methods:
+(simple accessor methods excluded)
+- public String toString --> overridden; helps to print the list of PhysicalHardDrive object(s) out by returning their information in certain format
+
+
+
+PhysicalVolume class (subclass of VolumeRelated)
+instance variables:
+- phd (PhysicalHardDrive) (unique, cannot be shared with another PV)
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- uuid (String) (inherited from VolumeRelated superclass)
+methods:
+(simple accessor methods excluded)
+- public double getSize() --> returns the size of the PhysicalVolume object's drive
+
+
+
+VolumeGroup class (subclass of VolumeRelated)
+instance variables:
+- uuid (String) (inherited from VolumeRelated superclass)
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- pvList (ArrayList<PhysicalVolume>) (import java.util.ArrayList)
+- lvList (ArrayList<LogicalVolume>)
+- size (double)
+- freeSpaceLeft (double)
+methods:
+(simple accessor methods excluded)
+- public double getSize() --> return the computed size of the VolumeGroup object by adding up the sizes of all PhysicalVolume object it has
+- public double getFreeSpaceLeft() --> return the computed free space left of the VG object by subtracting its size by the total size of LogicalVolume objects
+- public void update() --> in cases of adding PV or LV to the VG, this update method can be used to update the literals of size and freeSpaceLeft
+- public String toString() --> overridden; helps to print the list of VG object(s) out by returning their information in certain format
+
+
+
+LogicalVolume class (subclass of VolumeRelated)
+instance variables:
+- name (String) (user input) (inherited from VolumeRelated superclass)
+- uuid (String) (inherited from VolumeRelated superclass)
+- size (double) (user input)
+- vg (VolumeGroup)
+methods:
+(simple accessor methods excluded)
+- public String toString() --> overridden; helps to print the list of LV object(s) out by returning their information in certain format
+
+
+
+VolumeRelated class (super class of PhysicalVolume, VolumeGroup, LogicalVolume classes)
+- name (String) (user input)
+- uuid (String) (import java.util.UUID)
+methods:
+public String getName() --> returns the name of the object
+public String getUUID() --> returns the uuid of the object
+public void restoreUUID(String uuid) --> restore the uuid of the volume object after reopening the program
+
+
+
+Manager class
+instance variables:
+// storage for user inputs
+private ArrayList<PhysicalHardDrive> phdList;
+private ArrayList<PhysicalVolume> pvList;
+private ArrayList<VolumeGroup> vgList;
+private ArrayList<LogicalVolume> lvList;
+// Scanner object for user input
+private Scanner scanner;
+// data saver?
+private File file;
+private FileReader reader;
+private FileWriter writer;
+private BufferedReader br;
+private BufferedWriter bw;
+methods:
+- public void start() --> starts the program and collect user input; exit when "exit" is typed
+- public boolean checkRepeatedName**(String name) --> four of them; designed to return true if the name provided already exist, false otherwise
+- public boolean isAlreadyAssociated(PhysicalHardDrive phd) --> checks if the phd provided is already associated with a PV; true if it does, false if it does not
+- public VolumeGroup getAssociatedVG(PhysicalVolume pv) --> returns the VG that the given pv is associated with; if it is not associated with any, return null
+- public void processChoice(String choie) --> process the user input and give response accordingly
+- public void sortString(ArrayList<String> list) --> sort a list of String literals through the compareTo method calls
+- *NOT WORKING* public void store(Object info) --> store the given info into the Data file
+
+
+
+Runner class (with main method)
+Step 1: Create a Manager object.
+Step 2: Call the Manager object's instance method start()
